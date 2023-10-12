@@ -1,9 +1,6 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 
 // Declaring the Variables
-var saveBtn = $('.saveBtn');
+var saveBtn = $('#Btn1');
 var hourText = $('.hour');
 var description = $('.description');
 var pastText = $('#pastText');
@@ -51,163 +48,166 @@ var eventArr = [
 ];
 var today = dayjs();
 var container = $('#container');
-
-//Past
-var pastTimeBlockDiv = $('<div>');
-var pastTimeHour = $('<div>');
-var pastTimeText = $('<textarea>');
-var pastTimeBtn = $('<button>');
-var pastTimei = $('<i>');
-
-//Present
-var presentTimeBlockDiv = $('<div>');
-var presentTimeHour = $('<div>');
-var presentTimeText = $('<textarea>');
-var presentTimeBtn = $('<button>');
-var presentTimei = $('<i>');
-
-//Future
-var futureTimeBlockDiv = $('<div>');
-var futureTimeHour = $('<div>');
-var futureTimeText = $('<textarea>');
-var futureTimeBtn = $('<button>');
-var futureTimei = $('<i>');
-
-// Setting the Element tags for Past Time Block
-pastTimeBlockDiv.attr('id', 'hour-9');
-pastTimeBlockDiv.addClass('row time-block past');
-pastTimeHour.addClass('col-2 col-md-1 hour text-center py-3');
-pastTimeText.addClass('ol-8 col-md-10 description');
-pastTimeText.attr('rows', '3');
-pastTimeText.attr('id', 'pastText');
-pastTimeBtn.addClass('btn saveBtn col-2 col-md-1');
-pastTimeBtn.attr('aria-label', 'save');
-pastTimei.addClass('fas fa-save');
-pastTimei.attr('aria-hidden', 'true');
-
-// Setting the Element tags for Present Time Block
-presentTimeBlockDiv.attr('id', 'hour-10');
-presentTimeBlockDiv.addClass('row time-block present');
-presentTimeHour.addClass('col-2 col-md-1 hour text-center py-3');
-presentTimeText.addClass('ol-8 col-md-10 description');
-presentTimeText.attr('rows', '3');
-presentTimeText.attr('id', 'presentText');
-presentTimeBtn.addClass('btn saveBtn col-2 col-md-1');
-presentTimeBtn.attr('aria-label', 'save');
-presentTimei.addClass('fas fa-save');
-presentTimei.attr('aria-hidden', 'true');
-
-// Setting the Element tags for Future Time Block
-futureTimeBlockDiv.attr('id', 'hour-11');
-futureTimeBlockDiv.addClass('row time-block future');
-futureTimeHour.addClass('col-2 col-md-1 hour text-center py-3');
-futureTimeText.addClass('ol-8 col-md-10 description');
-futureTimeText.attr('rows', '3');
-futureTimeText.attr('id', 'futureText');
-futureTimeBtn.addClass('btn saveBtn col-2 col-md-1');
-futureTimeBtn.attr('aria-label', 'save');
-futureTimei.addClass('fas fa-save');
-futureTimei.attr('aria-hidden', 'true');
+var timeHour = 0;
 
 $(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
 
-  saveBtn.on("click", saveText);
-
-  function saveText(event) {
-    event.preventDefault();
-    eventTime.descriptionEvent = pastText.val();
-
-    localStorage.setItem("description", eventTime.descriptionEvent);
-    alert(pastText.val());
-    console.log(localStorage.getItem("description") + " working");
+  function setTime(numHour) {
+    if (numHour > 12) {
+      numHour = numHour - 12;
+      numHour = numHour.toString();
+      numHour = numHour + " PM";
+      return numHour;
+    }
+    else if (numHour < 12) {
+      numHour = numHour.toString();
+      numHour = numHour + " AM";
+      return numHour;
+    }
+    else {
+      numHour = numHour.toString();
+      numHour = numHour + " PM";
+      return numHour;
+    }
   }
-  
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
 
   var currentHour = today.hour();
-  console.log(currentHour)
-  var currentHour = 12;
-  console.log(currentHour);
 
   for (var i = 0; i < eventArr.length; i++) {
     if (currentHour > eventArr[i].hour) {
-      console.log("Past Hours: " + eventArr[i].hour);
       addPastTimeBlock();
     }
     else if (currentHour < eventArr[i].hour) {
-      console.log("Future Hours: " + eventArr[i].hour);
       addFutureTimeBlock();
     }
     else {
-      console.log("Current Hour: " + eventArr[i].hour);
       addPresentTimeBlock();
     }
   }
 
   function addPastTimeBlock() {
-    // container.append(pastTimeBlockDiv);
-    container.append(`<div id=past-card-${i} class=\"row time-block past\">`);
-    // pastTimeBlockDiv.append(pastTimeHour);
-    $(`#past-card-${i}`).append(`<div id=past-text-${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
-    // pastTimeHour.text(eventArr[i].hour)
-    $(`#past-text-${i}`).text(eventArr[i].hour);
-    // pastTimeBlockDiv.append(pastTimeText);
-    // need to use dayjs() to display right hour with AM/PM
-    $(`#past-card-${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=pastText${i}>`);
-    // pastTimeBlockDiv.append(pastTimeBtn);
-    $(`#past-card-${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=pastBtn${i} aria-label=save>`);
-    // pastTimeBtn.append(pastTimei);
-    $(`#pastBtn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
+    container.append(`<div id=card${i} class=\"row time-block past\">`);
+    $(`#card${i}`).append(`<div id=hour${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
+    $(`#hour${i}`).text(setTime(eventArr[i].hour));
+    $(`#card${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=textarea${i}>`);
+    $(`#card${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=Btn${i} aria-label=save>`);
+    $(`#Btn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
   }
 
   function addPresentTimeBlock() {
-    // container.append(presentTimeBlockDiv);
-    container.append(`<div id=present-card-${i} class=\"row time-block present\">`);
-    // presentTimeBlockDiv.append(presentTimeHour);
-    $(`#present-card-${i}`).append(`<div id=present-text-${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
-    // presentTimeHour.text(eventArr[i].hour);
-    $(`#present-text-${i}`).text(eventArr[i].hour, today.format('H A'));
-    // presentTimeBlockDiv.append(presentTimeText);
-    $(`#present-card-${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=presentText${i}>`);
-    // presentTimeBlockDiv.append(presentTimeBtn);
-    $(`#present-card-${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=presentBtn${i} aria-label=save>`);
-    // presentTimeBtn.append(presentTimei);
-    $(`#presentBtn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
+    container.append(`<div id=card${i} class=\"row time-block present\">`);
+    $(`#card${i}`).append(`<div id=hour${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
+    $(`#hour${i}`).text(setTime(eventArr[i].hour));
+    $(`#card${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=textarea${i}>`);
+    $(`#card${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=Btn${i} aria-label=save>`);
+    $(`#Btn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
   }
 
   function addFutureTimeBlock() {
-    // container.append(futureTimeBlockDiv);
-    container.append(`<div id=future-card-${i} class=\"row time-block future\">`);
-    // futureTimeHour.text(eventArr[i].hour);
-    $(`#future-card-${i}`).append(`<div id=future-text-${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
-    // futureTimeBlockDiv.append(futureTimeHour);
-    $(`#future-text-${i}`).text(eventArr[i].hour);
-    // futureTimeBlockDiv.append(futureTimeText);
-    $(`#future-card-${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=futureText${i}>`);
-    // futureTimeBlockDiv.append(futureTimeBtn);
-    $(`#future-card-${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=futureBtn${i} aria-label=save>`);
-    // futureTimeBtn.append(futureTimei);
-    $(`#futureBtn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
+    container.append(`<div id=card${i} class=\"row time-block future\">`);
+    $(`#card${i}`).append(`<div id=hour${i} class=\'col-2 col-md-1 hour text-center py-3\'>`);
+    $(`#hour${i}`).text(setTime(eventArr[i].hour));
+    $(`#card${i}`).append(`<textarea class=\'col-8 col-md-10 description\' rows=3 id=textarea${i}>`);
+    $(`#card${i}`).append(`<button class=\'btn saveBtn col-2 col-md-1\' id=Btn${i} aria-label=save>`);
+    $(`#Btn${i}`).append('<i class=\'fas fa-save\' aria-hidden=\'true\'>');
   }
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
   
   $('#currentDay').text(today.format('dddd[,] MMMM DD[th]'))
   //Monday, December 13th
+
+  $('#Btn0').on("click", saveText0);
+
+  function saveText0(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[0].description = $('#textarea0').val();
+    console.log(eventArr[0].description);
+    localStorage.setItem("event0", eventArr[0].description);
+  }
+
+  $('#Btn1').on("click", saveText1);
+
+  function saveText1(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[1].description = $('#textarea1').val();
+    console.log(eventArr[1].description);
+    localStorage.setItem("event1", eventArr[1].description);
+  }
+
+  $('#Btn2').on("click", saveText2);
+
+  function saveText2(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[2].description = $('#textarea2').val();
+    console.log(eventArr[2].description);
+    localStorage.setItem("event2", eventArr[2].description);
+  }
+
+  $('#Btn3').on("click", saveText3);
+
+  function saveText3(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[3].description = $('#textarea3').val();
+    console.log(eventArr[3].description);
+    localStorage.setItem("event3", eventArr[3].description);
+  }
+
+  $('#Btn4').on("click", saveText4);
+
+  function saveText4(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[4].description = $('#textarea4').val();
+    console.log(eventArr[4].description);
+    localStorage.setItem("event4", eventArr[4].description);
+  }
+
+  $('#Btn5').on("click", saveText5);
+
+  function saveText5(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[5].description = $('#textarea5').val();
+    console.log(eventArr[5].description);
+    localStorage.setItem("event5", eventArr[5].description);
+  }
+
+  $('#Btn6').on("click", saveText6);
+
+  function saveText6(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[6].description = $('#textarea6').val();
+    console.log(eventArr[6].description);
+    localStorage.setItem("event6", eventArr[6].description);
+  }
+
+  $('#Btn7').on("click", saveText7);
+
+  function saveText7(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[7].description = $('#textarea7').val();
+    console.log(eventArr[7].description);
+    localStorage.setItem("event7", eventArr[7].description);
+  }
+
+  $('#Btn8').on("click", saveText8);
+
+  function saveText8(event) {
+    event.preventDefault();
+    console.log("Click success.");
+    eventArr[8].description = $('#textarea8').val();
+    console.log(eventArr[8].description);
+    localStorage.setItem("event8", eventArr[8].description);
+  }
+
+  for (var k = 0; k < eventArr.length; k++) {
+    $(`#textarea${k}`).text(localStorage.getItem(`event${k}`));
+  }
+
 });
