@@ -72,6 +72,7 @@ $(function () {
   }
 
   var currentHour = today.hour();
+  // var currentHour = 10;
 
   for (var i = 0; i < eventArr.length; i++) {
     if (currentHour > eventArr[i].hour) {
