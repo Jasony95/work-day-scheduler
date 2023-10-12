@@ -41,6 +41,9 @@ Current hour are changed to 10AM:
 2 PM:
 ![2PM](assets/images/2PM.jpg)
 
+GitHub Repo Link: https://github.com/Jasony95/work-day-scheduler
+GitHub Page Link: https://jasony95.github.io/work-day-scheduler/
+
 ## Credits
 
 Collaborators:
